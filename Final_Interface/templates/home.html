@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hugging Face Chatbot</title>
+    <style>
+        /* Fullscreen settings */
+        body, html {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, sans-serif;
+            background-color: #1e1e2f;
+            color: #e0e0e0;
+        }
+
+        /* Chatbot container styling */
+        #chatContainer {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background-color: #2a2a3b;
+            color: #ffb000;
+            width: 100vw; /* Full width */
+            height: 100vh; /* Full height */
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        /* Header styling */
+        h1, #description {
+            color: #ffb000;
+            text-align: center;
+            margin: 0;
+            padding: 10px 0;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        #chatLog {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+            background-color: #33334a;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        /* Message styling */
+        .message {
+            padding: 10px;
+            border-radius: 10px;
+            margin: 5px 0;
+            font-size: 1em;
+            max-width: 90%;
+            line-height: 1.4em;
+            word-wrap: break-word;
+            text-align: left;
+            align-self: flex-start; /* Align all messages to the left */
+        }
+
+        .user-message {
+            background-color: #575775;
+            color: #ffb000;
+        }
+
+        .bot-response {
+            background-color: #40405a;
+            color: #ffb000;
+        }
+
+        /* Input field and button styling */
+        #chatInput {
+            display: flex;
+            padding-top: 10px;
+            border-top: 1px solid #555;
+        }
+
+        #userMessage {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #444;
+            border-radius: 5px;
+            background-color: #2a2a3b;
+            color: #e0e0e0;
+            font-size: 1em;
+            outline: none;
+        }
+
+        #sendMessageBtn {
+            padding: 10px 15px;
+            background-color: #ffb000;
+            color: #1e1e2f;
+            border: none;
+            border-radius: 5px;
+            margin-left: 10px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+
+        #sendMessageBtn:hover {
+            background-color: #e89b00;
+        }
+
+        #logoContainer {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+
+        #logoContainer img {
+            width: 80px;
+            height: auto;
+            filter: brightness(0.9);
+        }
+    </style>
+</head>
+<body>
+    <div id="chatContainer">
+        <div id="logoContainer">
+            <img src="https://huggingface.co/front/assets/huggingface_logo-noborder.svg" alt="Hugging Face Logo">
+        </div>
+        <h1>Hugging Face Chatbot</h1>
+        <p id="description"><strong>Explore Hugging Face tools, models, and libraries!</strong></p>
+        <div id="chatLog"></div>
+        <div id="chatInput">
+            <input type="text" id="userMessage" placeholder="Type your question..." autocomplete="off">
+            <button id="sendMessageBtn" onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <script>
+        async function sendMessage() {
+            const message = document.getElementById("userMessage").value;
+            if (message.trim() === "") return; // Avoid sending empty messages
+
+            // Display user message in chat log
+            document.getElementById("chatLog").innerHTML += `<div class="message user-message">${message}</div>`;
+            document.getElementById("userMessage").value = ''; // Clear input
+
+            // Send message to server and get bot response
+            const response = await fetch('/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ message: message }),
+            });
+            const data = await response.json();
+
+            // Display bot response in chat log
+            document.getElementById("chatLog").innerHTML += `<div class="message bot-response">${data.response}</div>`;
+
+            // Scroll to the bottom of chat log
+            document.getElementById("chatLog").scrollTop = document.getElementById("chatLog").scrollHeight;
+        }
+
+        // Add event listener to send message on Enter key press
+        document.getElementById("userMessage").addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                sendMessage();
+            }
+        });
+    </script>
+</body>
+</html>
