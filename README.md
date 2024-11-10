@@ -39,7 +39,7 @@
 
 <h2>Contact</h2>
 <p>For questions or contributions, feel free to reach out to me on 
-   <a href="https://www.linkedin.com/in/aya-badawy-688869280/" target="_blank">LinkedIn</a> or through my GitHub profile.</p>
+   <a href="https://www.linkedin.com/in/asser-mosa-331827282/" target="_blank">LinkedIn</a> or through my GitHub profile.</p>
 
 
 </body>
